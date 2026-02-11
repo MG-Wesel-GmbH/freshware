@@ -111,7 +111,7 @@ USER www-data
 
 # Set up Shopware project
 RUN set -eux; \
-    export PHP_MEMORY_LIMIT=1G; \
+    export PHP_MEMORY_LIMIT=4G; \
     composer create-project shopware/production=${SW6VERSION} /var/www/freshware \
     && rm -rf /var/www/html \
     && ln -s /var/www/freshware /var/www/html \
