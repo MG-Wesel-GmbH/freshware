@@ -111,12 +111,13 @@ USER www-data
 
 # Set up Shopware project
 RUN set -eux; \
-    export PHP_MEMORY_LIMIT=-1; \
-    php -d memory_limit=-1 /usr/bin/composer create-project shopware/production=${SW6VERSION} /var/www/freshware \
-    && rm -rf /var/www/html \
-    && ln -s /var/www/freshware /var/www/html \
-    && cd /var/www/html \
-    && php -d memory_limit=-1 /usr/bin/composer update -n
+    export COMPOSER_MEMORY_LIMIT=-1; \
+    # Wir nutzen 'which', um den Pfad automatisch zu finden
+    php -d memory_limit=-1 $(which composer) create-project shopware/production=${SW6VERSION} /var/www/freshware --no-interaction; \
+    rm -rf /var/www/html; \
+    ln -s /var/www/freshware /var/www/html; \
+    cd /var/www/html; \
+    php -d memory_limit=-1 $(which composer) update -n
 
 # Switch back to root for final configurations
 USER root
