@@ -117,7 +117,7 @@ RUN set -eux; \
     rm -rf /var/www/html; \
     ln -s /var/www/freshware /var/www/html; \
     cd /var/www/html; \
-    php -d memory_limit=-1 $(which composer) remove store.shopware.com/moorlsignin --no-update; \
+    php -d memory_limit=-1 $(which composer) config audit.ignore-blocks true; \
     php -d memory_limit=-1 $(which composer) update -n -W
 
 # Switch back to root for final configurations
