@@ -117,6 +117,7 @@ RUN set -eux; \
     rm -rf /var/www/html; \
     ln -s /var/www/freshware /var/www/html; \
     cd /var/www/html; \
+    php -d memory_limit=-1 $(which composer) config audit.ignore PKSA-y2cr-5h3j-g3ys --append; \
     php -d memory_limit=-1 $(which composer) update -n
 
 # Switch back to root for final configurations
