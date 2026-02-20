@@ -34,7 +34,7 @@ RUN set -eux; \
 
 # Set environment variables
 ENV SW6VERSION="v6.6.10.13"
-ENV FRESHWARE_VERSION="0.2.9"
+ENV FRESHWARE_VERSION="0.3.9"
 ENV TZ=Europe/Berlin
 ENV SW_TASKS_ENABLED=0
 ENV SSH_USER=not-set
@@ -117,7 +117,6 @@ RUN set -eux; \
     rm -rf /var/www/html; \
     ln -s /var/www/freshware /var/www/html; \
     cd /var/www/html; \
-    php -d memory_limit=-1 $(which composer) config audit.ignore-blocks true; \
     php -d memory_limit=-1 $(which composer) update -n -W
 
 # Switch back to root for final configurations
