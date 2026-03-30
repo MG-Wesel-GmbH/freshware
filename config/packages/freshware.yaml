@@ -61,19 +61,19 @@ shopware:
   product_stream:
     indexing: '%env(bool:PRODUCT_STREAM_INDEXING)%'
 
-#monolog:
-#  handlers:
-#    main:
-#      level: error
-#      buffer_size: 30
-#    business_event_handler_buffer:
-#      level: error
 monolog:
   handlers:
     main:
-      type: stream
-      path: "%kernel.logs_dir%/%kernel.environment%.log"
-      level: debug
-    console:
-      type: console
-      process_psr_3_messages: false
+      level: error
+      buffer_size: 30
+    business_event_handler_buffer:
+      level: error
+#monolog:
+#  handlers:
+#    main:
+#      type: stream
+#      path: "%kernel.logs_dir%/%kernel.environment%.log"
+#      level: debug
+#    console:
+#      type: console
+#      process_psr_3_messages: false
