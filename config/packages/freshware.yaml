@@ -12,6 +12,11 @@ framework:
         tags: cache.tags
   session:
     handler_id: 'redis://%env(string:REDIS_HOST)%:%env(string:REDIS_PORT)%/1?timeout=3&read_timeout=3&retry_interval=3'
+    cookie_lifetime: 86400
+    gc_maxlifetime: 86400
+    cookie_secure: auto
+    cookie_samesite: lax
+    cookie_httponly: true
   lock: 'redis://%env(string:REDIS_HOST)%:%env(string:REDIS_PORT)%/3?persistent=1&timeout=3&read_timeout=3&retry_interval=3'
   secrets:
     enabled: false
@@ -43,6 +48,7 @@ shopware:
   number_range:
     increment_storage: 'SQL'
   cart:
+    expire_days: 14
     storage:
       type: 'redis'
       config:
