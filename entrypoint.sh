@@ -250,7 +250,7 @@ if [ "${SKIP_INSTALLATION_CHECK}" = "1" ] || [ -f "$FILE" ]; then
         echo "FRESHWARE: Starting worker..."
         while true; do
               set +e
-              php bin/console messenger:consume async low_priority --memory-limit=${WORKER_MEMORY_LIMIT} --time-limit=${WORKER_TIME_LIMIT} ${WORKER_CUSTOM_PARAMS}
+              php bin/console messenger:consume async failed low_priority --memory-limit=${WORKER_MEMORY_LIMIT} --time-limit=${WORKER_TIME_LIMIT} ${WORKER_CUSTOM_PARAMS}
               EXIT_CODE=$?
               set -e
               echo "FRESHWARE: Worker process exited with code ${EXIT_CODE}. Restarting in 5 seconds..."
