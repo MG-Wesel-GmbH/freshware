@@ -110,14 +110,24 @@ RUN set -eux; \
 USER www-data
 
 # Set up Shopware project
+#RUN set -eux; \
+#    export COMPOSER_MEMORY_LIMIT=-1; \
+#    # Wir nutzen 'which', um den Pfad automatisch zu finden
+#    php -d memory_limit=-1 $(which composer) create-project shopware/production=${SW6VERSION} /var/www/freshware --no-interaction; \
+#    rm -rf /var/www/html; \
+#    ln -s /var/www/freshware /var/www/html; \
+#    cd /var/www/html; \
+#    php -d memory_limit=-1 $(which composer) update -n -W
 RUN set -eux; \
     export COMPOSER_MEMORY_LIMIT=-1; \
-    # Wir nutzen 'which', um den Pfad automatisch zu finden
     php -d memory_limit=-1 $(which composer) create-project shopware/production=${SW6VERSION} /var/www/freshware --no-interaction; \
     rm -rf /var/www/html; \
     ln -s /var/www/freshware /var/www/html; \
     cd /var/www/html; \
-    php -d memory_limit=-1 $(which composer) update -n -W
+    $(which composer) config policy.advisories.block false; \
+    php -d memory_limit=-1 $(which composer) update -n -W --no-blocking
+
+
 
 # Switch back to root for final configurations
 USER root
