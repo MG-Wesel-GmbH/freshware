@@ -41,7 +41,7 @@ update_composer_json() {
   else
     REMOTE_URL="https://freshware-default-composer.memoryhost.workers.dev"
   fi
-  # Inform what action is being taken
+
   if [ -f "composer.json" ]; then
     echo "Updating existing composer.json from $REMOTE_URL"
   else
@@ -60,11 +60,12 @@ update_composer_json() {
     echo "Using SW6VERSION: $SW6VERSION"
     mv composer.json.template composer.json
   fi
-  # Security-Advisory-Blockade deaktivieren, damit dompdf geladen werden kann
+
+  # Deaktiviere die Security-Blockade sauber in der heruntergeladenen composer.json
   composer config policy.advisories.block false
 
   composer require shopware/core:$SW6VERSION --no-update
-  composer update -n --no-blocking
+  COMPOSER_NO_AUDIT=1 composer update -n --no-audit
 }
 
 # Function to cleanup old theme folders
