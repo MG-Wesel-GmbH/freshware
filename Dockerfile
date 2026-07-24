@@ -110,29 +110,14 @@ RUN set -eux; \
 USER www-data
 
 # Set up Shopware project
-#RUN set -eux; \
-#    export COMPOSER_MEMORY_LIMIT=-1; \
-#    # Wir nutzen 'which', um den Pfad automatisch zu finden
-#    php -d memory_limit=-1 $(which composer) create-project shopware/production=${SW6VERSION} /var/www/freshware --no-interaction; \
-#    rm -rf /var/www/html; \
-#    ln -s /var/www/freshware /var/www/html; \
-#    cd /var/www/html; \
-#    php -d memory_limit=-1 $(which composer) update -n -W
-# Set up Shopware project
 RUN set -eux; \
     export COMPOSER_MEMORY_LIMIT=-1; \
-    # 1. Globale Composer-Konfiguration setzen, damit Security-Advisories nicht blockieren
-    composer config --global policy.advisories.block false; \
-    # 2. Project erstellen (ohne ungültiges --no-audit Flag)
-    php -d memory_limit=-1 $(which composer) create-project shopware/production:${SW6VERSION} /var/www/freshware --no-interaction; \
+    # Wir nutzen 'which', um den Pfad automatisch zu finden
+    php -d memory_limit=-1 $(which composer) create-project shopware/production=${SW6VERSION} /var/www/freshware --no-interaction; \
     rm -rf /var/www/html; \
     ln -s /var/www/freshware /var/www/html; \
     cd /var/www/html; \
-    # 3. Lokale composer.json konfigurieren und update ausführen
-    php -d memory_limit=-1 $(which composer) config policy.advisories.block false; \
     php -d memory_limit=-1 $(which composer) update -n -W
-
-
 
 # Switch back to root for final configurations
 USER root
