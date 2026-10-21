@@ -109,15 +109,24 @@ RUN set -eux; \
 # Switch to www-data user for Shopware setup
 USER www-data
 
-# Set up Shopware project
+# Set up Shopware project structure
 RUN set -eux; \
     export COMPOSER_MEMORY_LIMIT=-1; \
-    # Wir nutzen 'which', um den Pfad automatisch zu finden
-    php -d memory_limit=-1 $(which composer) create-project shopware/production=${SW6VERSION} /var/www/freshware --no-interaction; \
+    php -d memory_limit=-1 $(which composer) create-project shopware/production=${SW6VERSION} /var/www/freshware --no-interaction --no-install; \
     rm -rf /var/www/html; \
-    ln -s /var/www/freshware /var/www/html; \
-    cd /var/www/html; \
-    php -d memory_limit=-1 $(which composer) update -n -W
+    ln -s /var/www/freshware /var/www/html
+
+# Eigene composer.json hineinkopieren (ersetzt das Standard-Template)
+COPY --chown=www-data:www-data composer.json /var/www/freshware/composer.json
+
+# Falls vorhanden: auth.json für packages.shopware.com hineinkopieren (für Store-Plugins nötig)
+# COPY --chown=www-data:www-data auth.json /var/www/freshware/auth.json
+
+# Abhängigkeiten mit deiner composer.json auflösen
+RUN set -eux; \
+    cd /var/www/freshware; \
+    export COMPOSER_MEMORY_LIMIT=-1; \
+    php -d memory_limit=-1 $(which composer) update "shopware/*" store.shopware.com/swkwebproductset -W --no-interaction
 
 # Switch back to root for final configurations
 USER root
