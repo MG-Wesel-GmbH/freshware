@@ -34,7 +34,7 @@ RUN set -eux; \
 
 # Set environment variables
 ENV SW6VERSION="v6.6.10.31"
-ENV FRESHWARE_VERSION="0.5.4"
+ENV FRESHWARE_VERSION="0.5.5"
 ENV TZ=Europe/Berlin
 ENV SW_TASKS_ENABLED=0
 ENV SSH_USER=not-set
@@ -112,15 +112,16 @@ USER www-data
 # Set up Shopware project and resolve dependencies inline
 RUN set -eux; \
     export COMPOSER_MEMORY_LIMIT=-1; \
-    composer create-project shopware/production-template /var/www/freshware "${SW6VERSION}" --no-interaction --no-install; \
+    CLEAN_VERSION=$(echo "${SW6VERSION}" | sed 's/^v//'); \
+    composer create-project shopware/production /var/www/freshware "${CLEAN_VERSION}" --no-interaction --no-install; \
     rm -rf /var/www/html; \
     ln -s /var/www/freshware /var/www/html; \
     cd /var/www/freshware; \
     composer require \
-        "shopware/core:${SW6VERSION#v}" \
-        "shopware/storefront:${SW6VERSION#v}" \
-        "shopware/administration:${SW6VERSION#v}" \
-        "shopware/elasticsearch:${SW6VERSION#v}" \
+        "shopware/core:${CLEAN_VERSION}" \
+        "shopware/storefront:${CLEAN_VERSION}" \
+        "shopware/administration:${CLEAN_VERSION}" \
+        "shopware/elasticsearch:${CLEAN_VERSION}" \
         --no-update --no-interaction; \
     composer update -W --no-interaction
 
