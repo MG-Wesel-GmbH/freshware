@@ -34,7 +34,7 @@ RUN set -eux; \
 
 # Set environment variables
 ENV SW6VERSION="v6.6.10.31"
-ENV FRESHWARE_VERSION="0.5.5"
+ENV FRESHWARE_VERSION="0.5.6"
 ENV TZ=Europe/Berlin
 ENV SW_TASKS_ENABLED=0
 ENV SSH_USER=not-set
@@ -123,7 +123,7 @@ RUN set -eux; \
         "shopware/administration:${CLEAN_VERSION}" \
         "shopware/elasticsearch:${CLEAN_VERSION}" \
         --no-update --no-interaction; \
-    composer update -W --no-interaction
+    composer update -W --no-interaction --no-scripts
 
 # Switch back to root for final configurations
 USER root
