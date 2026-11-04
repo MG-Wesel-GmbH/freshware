@@ -33,8 +33,8 @@ RUN set -eux; \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 # Set environment variables
-ENV SW6VERSION="v6.6.10.29"
-ENV FRESHWARE_VERSION="0.5.3"
+ENV SW6VERSION="v6.6.10.31"
+ENV FRESHWARE_VERSION="0.5.4"
 ENV TZ=Europe/Berlin
 ENV SW_TASKS_ENABLED=0
 ENV SSH_USER=not-set
@@ -116,7 +116,7 @@ RUN set -eux; \
     rm -rf /var/www/html; \
     ln -s /var/www/freshware /var/www/html; \
     cd /var/www/freshware; \
-    php -d memory_limit=-1 $(which composer) require shopware/core:6.6.10.29 shopware/storefront:6.6.10.29 --no-update; \
+    php -d memory_limit=-1 $(which composer) require shopware/core:6.6.10.31 shopware/storefront:6.6.10.31 --no-update; \
     php -d memory_limit=-1 $(which composer) update "shopware/*" -W --no-interaction
 
 # Switch back to root for final configurations
