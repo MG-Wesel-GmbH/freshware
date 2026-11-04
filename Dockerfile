@@ -112,12 +112,17 @@ USER www-data
 # Set up Shopware project and resolve dependencies inline
 RUN set -eux; \
     export COMPOSER_MEMORY_LIMIT=-1; \
-    php -d memory_limit=-1 $(which composer) create-project shopware/production=${SW6VERSION} /var/www/freshware --no-interaction; \
+    composer create-project shopware/production-template /var/www/freshware "${SW6VERSION}" --no-interaction --no-install; \
     rm -rf /var/www/html; \
     ln -s /var/www/freshware /var/www/html; \
     cd /var/www/freshware; \
-    php -d memory_limit=-1 $(which composer) require shopware/core:6.6.10.31 shopware/storefront:6.6.10.31 --no-update; \
-    php -d memory_limit=-1 $(which composer) update "shopware/*" -W --no-interaction
+    composer require \
+        "shopware/core:${SW6VERSION#v}" \
+        "shopware/storefront:${SW6VERSION#v}" \
+        "shopware/administration:${SW6VERSION#v}" \
+        "shopware/elasticsearch:${SW6VERSION#v}" \
+        --no-update --no-interaction; \
+    composer update -W --no-interaction
 
 # Switch back to root for final configurations
 USER root
