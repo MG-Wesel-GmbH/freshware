@@ -10,6 +10,17 @@ framework:
       cache.http:
         adapter: cache.adapter.redis_tag_aware
         tags: cache.tags
+    cache_compression: false
+    cache_compression_method: zlib
+    tagging:
+      each_config: false
+      each_snippet: false
+      each_theme_config: false
+    # NEU: Verhindert den SQL-Stau bei Massen-Updates
+    invalidation:
+      delay_options:
+        storage: redis
+        connection: 'persistent'
   session:
     handler_id: 'redis://%env(string:REDIS_HOST)%:%env(string:REDIS_PORT)%/1?timeout=3&read_timeout=3&retry_interval=3'
     cookie_lifetime: 86400
@@ -39,16 +50,10 @@ shopware:
     connections:
       persistent:
         dsn: 'redis://%env(string:REDIS_HOST)%:%env(string:REDIS_PORT)%/2?persistent=1&timeout=3&read_timeout=3&retry_interval=3'
-  #number_range:
-  #  increment_storage: 'redis'
-  #  config:
-  #    connection: 'persistent'
-  # SQL comes from mnt/prod_swarm/freshware/data/config/packages
-  # Later, as recommended by Shopware, it will be switched to Redis. (Pay attention to number cycle/migration)
   number_range:
     increment_storage: 'SQL'
   cart:
-    expire_days: 14
+    expire_days: 30
     storage:
       type: 'redis'
       config:
@@ -57,7 +62,7 @@ shopware:
     compression_method: zstd
   cache:
     cache_compression: true
-    cache_compression_method: zstd
+    cache_compression_method: gzip
     tagging:
       each_config: false
       each_snippet: false
@@ -66,14 +71,40 @@ shopware:
     enable_admin_worker: '%env(bool:ENABLE_ADMIN_WORKER)%'
   product_stream:
     indexing: '%env(bool:PRODUCT_STREAM_INDEXING)%'
+  mail:
+    update_mail_variables_on_send: false
 
+#
+# Andi aktiviert am 03.11.2026
+#
 monolog:
   handlers:
     main:
+      # GEÄNDERT: Von 'debug' auf 'error'. Protokolliert nur noch echte Systemfehler.
       level: error
       buffer_size: 30
     business_event_handler_buffer:
-      level: error
+      # GEÄNDERT: Von 'debug' auf 'critical'.
+      level: critical
+    console:
+      type: console
+      process_psr_3_messages: false
+
+#
+# Andi deaktiviert am 03.11.2026
+#
+#monolog:
+#  handlers:
+#    main:
+#      level: debug
+#      buffer_size: 30
+#    business_event_handler_buffer:
+#      level: debug
+#    console:
+#      type: console
+#      process_psr_3_messages: false
+
+
 #monolog:
 #  handlers:
 #    main:
